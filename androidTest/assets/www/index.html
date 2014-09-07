@@ -1,0 +1,366 @@
+<html>
+<head>
+<title>[=Online Band=]</title>
+<meta http-equiv="Content-Type" width='device-width' content="text/html; charset=utf-8">
+<script type="text/javascript" charset="utf-8" src="js/initialization.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/library/cordova-2.5.0.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/library/PGLowLatencyAudio.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/library/jquery-1.9.1.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/DOMManipulation/lobbyUI.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/DOMManipulation/roomInteraction.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/pages/instrumentPage.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/pages/lobbyPage.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/pages/loginPage.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/pages/mainPage.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/pages/mySongsPage.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/pages/toolbar.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/serverInteraction/connectSocket.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/serverInteraction/getURL.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/serverInteraction/mongoDb.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/test.js"></script>
+
+<!--CSS Reference-->
+<link href="css/reset.css" rel="stylesheet" type="text/css">
+<link href="css/layout.css" rel="stylesheet" type="text/css">
+<link href="css/instruments.css" rel="stylesheet" type="text/css">
+<link href="css/widgets.css" rel="stylesheet" type="text/css">
+<link href="css/animation.css" rel="stylesheet" type="text/css">
+<link href="css/toolbar.css" rel="stylesheet" type="text/css">
+<link href="css/style.css" rel="stylesheet" type="text/css">
+
+<!--The Fonts-->
+<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+</head>
+
+<body onload="onBodyLoad()">
+<div id="serverIndicator"></div>
+<div id='toolBar'>
+    <form id='myWord'>
+        <input class='hideChat' id='chatmsg' type='text' />
+        <a id='startChat' onclick='chatButton()'>chat</a>
+    </form>
+    <div id='othersWord'></div>
+    <a id='recordStart' onclick='recordButton()' ontouchend='touchend(event)'>Record </a>
+    <a id='replay' onclick='playButton()' ontouchend='touchend(event)'>Replay </a>
+</div>
+
+
+<div id="container">
+	<div class="loginPage" id="login">
+		<form style="text-align:center;width: 100%;">
+      		<input type="text" id="socketUrl" class="textbox" value="http://128.237.206.150:3000/" placeholder="url for socket"/>
+      		<div name="Submit" ontouchstart="getServer();" id="submitUrl">Connect</div>
+    	</form>
+            <div id="title1" class="appTitle">Onl♪ne</div>
+            <div id="title2" class="appTitle">Band</div>
+            <input id="usernameInput" class="textbox" placeholder="Username:" type="text" />
+            <input id="passwordInput" class="textbox" placeholder="Password:" type="password" class="textbox"/>
+        <div id="loginValidation"></div>
+        <div id="loginButton" class="button-middle button-blue" ontouchstart="login()" ontouchend="touchend(event)">Login</div>
+        <div id="registerButton" class="button-middle button-green" onclick="register()" ontouchend="touchend(event)">Register </div>
+	</div>
+
+    <div class="lobbyPage" id="lobby">
+        <div id="background"></div>
+        <a id="create-room" class="button-small button-blue" onclick="showCreate()" ontouchend="touchend(event)">Create</a>
+        <div id="join-room" class="button-small button-green" onclick="requestJoin()" ontouchend="touchend(event)">Join</div>
+        <div id="song-library" class="button-middle button-yellow" onclick="redirectPage('mySongsPage')" ontouchend="touchend(event)">My Songs</div>
+        <div id="createInfo">
+        	<form>
+        			<input type="text" size="20" id="roomName" class="textbox-large" placeholder="Room Name" />
+        			<input type="password" size="20" id="password" class="textbox-large" placeholder="Password" />
+                <a class='button-middle button-blue'id="cancelCreate" ontouchstart="hideCreate()" ontouchend="touchend(event)">Cancel</a>
+                <div class="button-middle button-green" id="submitCreate" onclick="createMaster()" ontouchend="touchend(event)">Submit</div>
+                <div id='sameName' class='paragraph3'> Existed Name</div>
+        	</form>
+        </div>
+
+        <div id="joinInfo">
+        	<form>
+        		<div>
+        			<input type="password" size="20"  placeholder="Password" id="join-password" class="textbox-large" >
+        		</div>
+                <a class='button-middle button-blue' id="cancelJoin" ontouchstart="hideJoin()" ontouchend="touchend(event)">Cancel</a>
+        		<div class="button-middle button-green" id="submitJoin" ontouchstart="joinMaster()" ontouchend="touchend(event)">Submit</div>
+        		<div id='pswError' class='paragraph3'>Incorrect Password</div>
+        	</form>
+        </div>
+        <div id="room-list">
+            <ul id="room-array"></ul>
+            <ul id="room-nav"></ul>
+        <!--<end room-list>--></div>
+
+    </div>
+    <div id='roomList-comment' class=validation>
+
+    </div>
+
+  	<div id='recordNamePage'>
+       	<input type="text" size="20"  placeholder="Song Name" id="songName" class="textbox-large">
+  		<a id="cancelRecord" class="button-middle button-blue" ontouchstart="$('#recordNamePage').css('display','none');" ontouchend="touchend(event)">Cancel</a>
+  		<a id="startRecord" class="button-middle button-blue" ontouchstart="startRecord()" ontouchend="touchend(event)">Confirm</a>
+  	</div>
+
+  	<div id='recordConfirmPage'>
+  		<div class='paragraph3'> Keep the record? </div>
+  		<a id="deleteRecord" class="button-middle button-blue" ontouchstart="deleteRecord()" ontouchend="touchend(event)">Delete</a>
+  		<a id="confirmRecord" class="button-middle button-blue" ontouchstart="confirmRecord()" ontouchend="touchend(event)">Confirm</a>
+  	</div>
+
+    <div id="replyPage">
+        <p id="replayTitle">Replay Page</p>
+        <div id="replySongList"></div>
+        <ul id="musicTrack">
+            <li><input type="checkbox" id="pianoCheck" name="instruCheck"/>Piano</li>
+            <li><input type="checkbox" id="guitarCheck" name="instruCheck"/>Guitar</li>
+            <li><input type="checkbox" id="drumCheck" name="instruCheck"/>Grum</li>
+            <li><input type="checkbox" id="bassCheck" name="instruCheck"/>Bass</li>
+        </ul>
+        <div class="button-middle button-blue" id="replayPlay" ontouchstart='getPlayBack()' ontouchend="touchend(event)">Play</div>
+        <div class="return" id="replyReturn" ontouchstart="hideReplay()" ontouchend="touchend(event)"></div>
+    </div>
+
+  <div class="menuPage">
+  	<div id='exitConfirmPage'>
+  		<div class='paragraph3'> Are you sure to exit? </div>
+  		<a id="exitCancel" class="button-middle button-blue" ontouchstart="hideExit()" ontouchend="touchend(event)">Cancel</a>
+  		<a id="exitConfirm" class="button-middle button-blue" ontouchstart="exitRoom()" ontouchend="touchend(event)">Confirm</a>
+  	</div>
+  	<div class="return" id="menuReturn" ontouchstart="showExit()"></div>
+    <div id="toPiano" ontouchstart="redirectPage('pianoPage')" ontouchend="touchend(event)"></div>
+      <!-- <div id="bassDiv" ontouchstart="bass();" ontouchend="touchend(event)">Bass</div> -->
+
+    <div id="toDrum" ontouchstart="redirectPage('drumPage');" ontouchend="touchend(event)"></div>
+      <!-- <div id="snareDiv" ontouchstart="touchSnare();" ontouchend="touchend(event)">Snare</div> -->
+    <div id="toBass" ontouchstart="redirectPage('bassPage');" ontouchend="touchend(event)"></div>
+      
+    <div id="toGuitar" ontouchstart="redirectPage('guitarPage');" ontouchend="touchend(event)"></div>
+  </div>
+  <div class="pianoPage">
+  	<div class="return" id="pianoReturn" ontouchstart="redirectPage('menuPage')"></div>
+  
+    <table id="Table_01" width="328" height="640" border="0" cellpadding="0" cellspacing="0">
+	<tr id="piano_c3" ontouchstart="touchInstrument('piano_c3')" ontouchend="touchend(event)">
+		<td rowspan="2">
+			<img src="images/piano_01.png" width="144" height="89" alt=""></td>
+		<td>
+			<img src="images/piano_02.png" width="183" height="56" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="56" alt=""></td>
+	</tr>
+	<tr id="piano_c3m" ontouchstart="touchInstrument('piano_c3m')" ontouchend="touchend(event)">
+		<td rowspan="2">
+			<img src="images/piano_03.png" width="183" height="59" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="33" alt=""></td>
+	</tr>
+	<tr id="piano_d3" ontouchstart="touchInstrument('piano_d3')" ontouchend="touchend(event)">
+		<td rowspan="3">
+			<img src="images/piano_04.png" width="144" height="93" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="26" alt=""></td>
+	</tr>
+	<tr>
+		<td>
+			<img src="images/piano_05.png" width="183" height="43" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="43" alt=""></td>
+	</tr>
+	<tr id="piano_d3m" ontouchstart="touchInstrument('piano_d3m')" ontouchend="touchend(event)">
+		<td rowspan="2">
+			<img src="images/piano_06.png" width="183" height="56" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="24" alt=""></td>
+	</tr>
+	<tr id="piano_e3" ontouchstart="touchInstrument('piano_e3')" ontouchend="touchend(event)">
+		<td rowspan="2">
+			<img src="images/piano_07.png" width="144" height="91" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="32" alt=""></td>
+	</tr>
+	<tr>
+		<td>
+			<img src="images/piano_08.png" width="183" height="59" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="59" alt=""></td>
+	</tr>
+	<tr id="piano_f3" ontouchstart="touchInstrument('piano_f3')" ontouchend="touchend(event)">
+		<td rowspan="2">
+			<img src="images/piano_09.png" width="144" height="92" alt=""></td>
+		<td>
+			<img src="images/piano_10.png" width="183" height="55" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="55" alt=""></td>
+	</tr>
+	<tr id="piano_f3m" ontouchstart="touchInstrument('piano_f3m')" ontouchend="touchend(event)">
+		<td rowspan="2">
+			<img src="images/piano_11.png" width="183" height="61" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="37" alt=""></td>
+	</tr>
+
+	<tr id="piano_g3" ontouchstart="touchInstrument('piano_g3')" ontouchend="touchend(event)">
+		<td rowspan="3">
+			<img src="images/piano_12.png" width="144" height="91" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="24" alt=""></td>
+	</tr>
+
+	<tr>
+		<td>
+			<img src="images/piano_13.png" width="183" height="39" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="39" alt=""></td>
+	</tr>
+
+	<tr id="piano_g3m" ontouchstart="touchInstrument('piano_g3m')" ontouchend="touchend(event)">
+		<td rowspan="2">
+			<img src="images/piano_14.png" width="183" height="57" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="28" alt=""></td>
+	</tr>
+
+	<tr id="piano_a4" ontouchstart="touchInstrument('piano_a3')" ontouchend="touchend(event)">
+		<td rowspan="3">
+			<img src="images/piano_15.png" width="144" height="91" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="29" alt=""></td>
+	</tr>
+
+	<tr>
+		<td>
+			<img src="images/piano_16.png" width="183" height="40" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="40" alt=""></td>
+	</tr>
+	
+  <tr id="piano_a4m" ontouchstart="touchInstrument('piano_a3m')" ontouchend="touchend(event)">
+		<td rowspan="2">
+			<img src="images/piano_17.png" width="183" height="59" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="22" alt=""></td>
+	</tr>
+	<tr id="piano_b4" ontouchstart="touchInstrument('piano_b3')" ontouchend="touchend(event)">
+		<td rowspan="2">
+			<img src="images/piano_18.png" width="144" height="93" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="37" alt=""></td>
+	</tr>
+	<tr>
+		<td>
+			<img src="images/piano_19.png" width="183" height="56" alt=""></td>
+		<td>
+			<img src="images/spacer.gif" width="1" height="56" alt=""></td>
+	</tr>
+  </table>
+  </div>
+  <div class="drumPage">
+  	<div class="return" id="drumReturn" ontouchstart="redirectPage('menuPage')"></div>
+        <div id="drumComponents">
+            <div id="kick" ></div>
+            <div id="drum_bass" ontouchstart="touchInstrument('drum_bass')" ontouchend='touchend(event)'></div>
+            <div id="drum_snare" class="tom" ontouchstart="touchInstrument('drum_snare')" ontouchend='touchend(event)'></div>
+            <div id="drum_lowTom" class="tom" ontouchstart="touchInstrument('drum_lowTom')" ontouchend='touchend(event)'></div>
+            <div id="drum_highTom" class="tom" ontouchstart="touchInstrument('drum_highTom')" ontouchend='touchend(event)'></div>
+            <div id="drum_highhat" ontouchstart="touchInstrument('drum_highhat')" ontouchend='touchend(event)'></div>
+            <div id="drum_crash" ontouchstart="touchInstrument('drum_crash')" ontouchend='touchend(event)'></div>
+        </div>
+  </div>
+
+	<div class="guitarPage">
+	<div class="return" id="guitarReturn" ontouchstart="redirectPage('menuPage')"></div>
+		<div id="guitarPanelTop" class="guitarPanel">
+			<ul class="guitarButton">
+				<li id='guitar_Am' class='guitarButton-touch' ontouchstart='changeGuitarChord("Am")'>Am</li>
+				<li id='guitar_C' ontouchstart='changeGuitarChord("C")'>C</li>
+				<li id='guitar_Dm' ontouchstart='changeGuitarChord("Dm")'>Dm</li>
+				<li id='guitar_E' ontouchstart='changeGuitarChord("E")'>E</li>
+			</ul>
+		</div>
+		<div id="guitarPanelBottom" class="guitarPanel">
+			<ul class="guitarButton">
+				<li id='guitar_F' ontouchstart='changeGuitarChord("F")'>F</li>
+				<li id='guitar_G' ontouchstart='changeGuitarChord("G")'>G</li>
+				<li id='guitar_Em' ontouchstart='changeGuitarChord("Em")'>Em</li>
+				<li id='guitar_i' ontouchstart='redirectPage("menuPage")'>Fm</li>
+			</ul>
+
+
+		</div>
+		<div id="guitar_6" class="guitarString" ontouchstart="touchInstrument('guitar_6')" ontouchend='touchend(event)'></div>
+		<div id="guitar_5" class="guitarString" ontouchstart="touchInstrument('guitar_5')" ontouchend='touchend(event)'></div>
+		<div id="guitar_4" class="guitarString" ontouchstart="touchInstrument('guitar_4')" ontouchend='touchend(event)'></div>
+		<div id="guitar_3" class="guitarString" ontouchstart="touchInstrument('guitar_3')" ontouchend='touchend(event)'></div>
+		<div id="guitar_2" class="guitarString" ontouchstart="touchInstrument('guitar_2')" ontouchend='touchend(event)'></div>
+		<div id="guitar_1" class="guitarString" ontouchstart="touchInstrument('guitar_1')" ontouchend='touchend(event)'></div>
+
+	</div>
+	<div class="bassPage">
+	<div class="return" id="bassReturn" ontouchstart="redirectPage('menuPage')"></div>
+        <div class="bass_00">
+            <div id="bass_00-1" class="stringConverge bassString bass_String1" ontouchstart="touchInstrument('bass_0-1')" ontouchend='touchend(event)'></div>
+            <div id="bass_00-2" class="bassString bass_String2" ontouchstart="touchInstrument('bass_0-2')" ontouchend='touchend(event)'></div>
+            <div id="bass_00-3" class="bassString bass_String3" ontouchstart="touchInstrument('bass_0-3')" ontouchend='touchend(event)'></div>
+            <div id="bass_00-4" class="stringConverge bassString bass_String4" ontouchstart="touchInstrument('bass_0-4')" ontouchend='touchend(event)'></div>
+        </div>
+        <div class="bass_0">
+            <div id="bass_0-1" class="bassString bass_String1" ontouchstart="touchInstrument('bass_0-1')" ontouchend='touchend(event)'></div>
+            <div id="bass_0-2" class="bassString bass_String2" ontouchstart="touchInstrument('bass_0-2')" ontouchend='touchend(event)'></div>
+            <div id="bass_0-3" class="bassString bass_String3" ontouchstart="touchInstrument('bass_0-3')" ontouchend='touchend(event)'></div>
+            <div id="bass_0-4" class="bassString bass_String4" ontouchstart="touchInstrument('bass_0-4')" ontouchend='touchend(event)'></div>
+        </div>
+        <!--<div id="chordZero"></div>-->
+        <div class="bass_1">
+			<div id="bass_4-1" class="bassString bass_String1" ontouchstart="touchInstrument('bass_4-1')" ontouchend='touchend(event)'></div>
+			<div id="bass_3-1" class="bassString bass_String2" ontouchstart="touchInstrument('bass_3-1')" ontouchend='touchend(event)'></div>
+			<div id="bass_2-1" class="bassString bass_String3" ontouchstart="touchInstrument('bass_2-1')" ontouchend='touchend(event)'></div>
+			<div id="bass_1-1" class="bassString bass_String4" ontouchstart="touchInstrument('bass_1-1')" ontouchend='touchend(event)'></div>				
+		</div>	
+		<div class="hr" id="hr1"></div>
+		<div class="bass_2">
+			<div id="bass_4-2" class="bassString bass_String1" ontouchstart="touchInstrument('bass_4-2')" ontouchend='touchend(event)'></div>
+			<div id="bass_3-2" class="bassString bass_String2" ontouchstart="touchInstrument('bass_3-2')" ontouchend='touchend(event)'></div>
+			<div id="bass_2-2" class="bassString bass_String3" ontouchstart="touchInstrument('bass_2-2')" ontouchend='touchend(event)'></div>
+			<div id="bass_1-2" class="bassString bass_String4" ontouchstart="touchInstrument('bass_1-2')" ontouchend='touchend(event)'></div>
+		</div>
+        <div class="hr" id="hr2"></div>
+		<div class="bass_3">
+			<div id="bass_4-3" class="bassString bass_String1" ontouchstart="touchInstrument('bass_4-3')" ontouchend='touchend(event)'></div>
+			<div id="bass_3-3" class="bassString bass_String2" ontouchstart="touchInstrument('bass_3-3')" ontouchend='touchend(event)'></div>
+			<div id="bass_2-3" class="bassString bass_String3" ontouchstart="touchInstrument('bass_2-3')" ontouchend='touchend(event)'></div>
+			<div id="bass_1-3" class="bassString bass_String4" ontouchstart="touchInstrument('bass_1-3')" ontouchend='touchend(event)'></div>				
+		</div>
+        <div class="hr" id="hr3"></div>
+		<div class="bass_4">
+			<div id="bass_4-4" class="bassString bass_String1" ontouchstart="touchInstrument('bass_4-4')" ontouchend='touchend(event)'></div>
+			<div id="bass_3-4" class="bassString bass_String2" ontouchstart="touchInstrument('bass_3-4')" ontouchend='touchend(event)'></div>
+			<div id="bass_2-4" class="bassString bass_String3" ontouchstart="touchInstrument('bass_2-3')" ontouchend='touchend(event)'></div>
+			<div id="bass_1-4" class="bassString bass_String4" ontouchstart="touchInstrument('bass_1-4')" ontouchend='touchend(event)'></div>				
+		</div>
+        <div class="hr" id="hr4 "></div>
+
+		<div class="bass_5">
+			<div id="bass_4-5" class="bassString bass_String1" ontouchstart="touchInstrument('bass_4-5')" ontouchend='touchend(event)'></div>
+			<div id="bass_3-5" class="bassString bass_String2" ontouchstart="touchInstrument('bass_3-5')" ontouchend='touchend(event)'></div>
+			<div id="bass_2-5" class="bassString bass_String3" ontouchstart="touchInstrument('bass_2-5')" ontouchend='touchend(event)'></div>
+			<div id="bass_1-5" class="bassString bass_String4" ontouchstart="touchInstrument('bass_1-5')" ontouchend='touchend(event)'></div>				
+		</div>	
+	</div>
+	<div class='mySongsPage' id='mySongs'>
+	<div class="return" id="songsReturn" ontouchstart="redirectPage('lobbyPage')"></div>
+
+		<div id="song-list">
+			<ul id='song-array'></ul>
+		</div >
+		<div id="removeSong" ontouchstart="deleteSong()" class="button-small button-yellow">Delete </div>
+	</div>
+
+
+</div>
+</body>
+</html>

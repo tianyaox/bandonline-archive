@@ -1,0 +1,47 @@
+
+
+.popWord{
+    opacity: 0;
+    amination:fadein 3s 1;
+    -webkit-animation: fadeIn 3s 1;
+    background: #5dade2;
+    position: fixed;
+    top:0px;
+    right:20px;
+    color: white;
+    height: 20px;
+    border-radius:0 0 0 15px;
+    padding: 0 3px 0 16px;
+}
+
+
+@-webkit-keyframes fadeIn {
+    0% {
+    opacity: 0;
+    }
+    20%{
+    opacity: 0.75;
+    }
+    50% {
+    opacity: 1;
+    }
+    80%{
+    opacity: 0.75;
+    }
+    100% {
+    opacity: 0;
+    }
+}
+
+
+@keyframes fadeIn {
+    0% {
+    opacity: 0;
+    }
+    50% {
+    opacity: 1;
+    }
+    100% {
+    opacity: 0;
+    }
+}

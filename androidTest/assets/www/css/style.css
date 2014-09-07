@@ -1,0 +1,237 @@
+/*The detailed styles*/
+
+#socketUrl{
+    border-color: #f4d03f;
+    color: #f4d03f;
+    font-size: 100%;
+    height: 40px;
+    border-radius: 6px 6px 0 0 ;
+    box-shadow: none;
+    background: rgba(255,255,255,0.2);
+}
+
+.appTitle{
+    font-size: 360%;
+    text-align: center;
+    color: rgba(255,255,255,0.9);
+    text-shadow:0 4px 1px rgba(52,152,219,0.8),0 4px 10px rgba(52,152,219,0.8);
+    font-family: 'Oswald', sans-serif;
+}
+#title1{
+    margin-top:12px;
+}
+
+#title2{
+    margin-bottom:27px;
+}
+
+#lobby, #mySongs{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#create-room{
+    text-decoration: none;
+}
+
+#room-list,#song-list{
+    background: #FFF;
+    height: 80%;
+    margin-top: 80px;
+    width: 89%;
+    margin: 0 auto;
+    border-radius: 10px;
+    padding: 5px 0;
+    overflow-y: scroll;
+    position: relative;
+    top: 25px;
+    width: 100%;
+}
+
+ul#room-array, ul#song-array{
+    padding: 0 5px;
+    float:left;
+}
+
+#room-array li, #song-array li{
+    list-style: none;
+    font-size:20px;
+    padding: 5px;
+    margin: 2px 0;
+}
+
+#room-array li li{
+    padding: 5px 140px 5px 30px;
+}
+
+
+#createInfo, #joinInfo, #exitConfirmPage,#recordConfirmPage,#recordNamePage {
+    display:none;
+    position: absolute;
+    background-color:rgba(50,100,200,0.5);
+    z-index: 101;
+    height: 59%;
+    width: 100%;
+    margin: 86px auto 0;
+    border-radius: 10px;
+    padding: 5px 0;
+}
+
+#background{
+    position: fixed;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    background: rgba(10,10,10,0.8);
+    display: none;
+    z-index: 100;
+}
+
+#room-nav{
+    float: right;
+    list-style: none;
+    position: absolute;
+    font-size: 60%;
+    top: 4px;
+    cursor: pointer;
+    right: 7%;
+}
+
+#room-nav li{
+    padding:1px 0;
+    font-family:arial;
+    font-weight:bold;
+}
+#exitConfirmPage,#recordConfirmPage,#recordNamePage{
+    background-color:rgba(150,200,200,1);
+}
+#exitConfirm, #exitCancel{
+    margin-top:20%;
+    background-image: linear-gradient(to bottom, #0088aa, #0077cc);
+}
+.paragraph3{
+    font-size:30px;
+    color:white;
+    text-align:center;
+}
+
+#loginValidation{
+    width: 80%;
+    margin: auto;
+    font-size: 100%;
+    color: #e74c3c;
+    margin-bottom: 20px;
+}
+
+#replyPage{
+    background:rgba(0,0,0,0.9);
+    width:100%;
+    height:80%;
+    position: absolute;
+    display: none;
+    z-index: 9999;
+    color: #fff;
+    margin: auto;
+    padding: 2%;
+}
+
+#replySonglist{
+    background:rgba(255,255,255,0.8);
+    width:80%;
+    height:30%;
+    margin:auto;
+    margin-top: 20px;
+    border-radius: 6px;
+}
+
+#submitUrl{
+    margin: auto;
+    margin-top: -12px;
+    margin-bottom: 10px;
+    background: #f4d03f;
+    height: 30px;
+    width: 80%;
+    box-shadow: none;
+    border: none;
+    border-radius: 0 0 6px 6px;
+    padding-top: 12px;
+    color: #000;
+    font-size: 120%;
+}
+
+#serverIndicator{
+    width: 20px;
+    height: 20px;
+    position: fixed;
+    right: 0px;
+    top:0px;
+}
+
+#chatMsg{
+    box-shadow: none;
+    height: 25px;
+    border: 2px solid rgb(85, 217, 141);
+    border-top: none;
+    margin-top: 2px;
+    padding: 0px;
+    display: inline-block;
+}
+
+#myWord{
+    position: fixed;
+    top:-2px;
+    left: 0px;
+    z-index: 999999999999;
+}
+
+#startChat{
+    background: rgb(85, 217, 141);
+    border-radius: 0 0 15px 0;
+    color: white;
+    width: 45px;
+    display: inline-block;
+    height: 27px;
+    padding-left: 15px;
+    font-size: 130%;
+    margin-left: -5px;
+    z-index: 999999999999;
+}
+
+#replayTitle{
+    text-align: center;
+    font-size: 300%;
+}
+
+#musicTrack{
+    margin-left: 9%;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+#musicTrack li{
+    padding: 3px 0
+}
+
+#replyReturn{
+    z-index: 99999999999;
+}
+
+#replayPlay{
+    position: absolute;
+    right: 10%;
+    top: 47%;
+    height: 50px;
+    font-size: 288%;
+}
+#removeSong{
+    position: absolute;
+    float: right;
+    top: 25px;
+    right: -17px;
+    border-radius: 0 0 0 10px;
+}
+
+#song-library{
+    font-size: 18px;
+}

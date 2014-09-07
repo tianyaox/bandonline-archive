@@ -1,0 +1,139 @@
+Team Stardust:
+
+Yajing Tang(yajingt)
+Chen Feng(cfeng)
+Tianyao Xu(tianyaox)
+
+
+Required elements:
+
+
+1.Javascript
+Client side:
+	All JS files are in js folder, which contains submodules:
+		initialization.js
+			all things needed to be initialized when device is ready
+		pages
+			Functionailities displayed within different pages,which include:
+			login page,lobby page,main page, mySongsPage, toolbar
+		DOMManipulation
+			Include all DOM manipulation using jQuery
+		serverInteraction
+			Include interaction functions for sending and receiving message from socket.io and mongoDB.
+	We use two different classes to store current playing rooms information,which differs from server side to client side. 
+		The clientroom class: lobbyPage.js,line 25
+		The serverroom class: socketserver.js, line 8
+	Advanced algorithms:
+		1. Dynamic room list construction: the room list in our lobbyPage is able to add a new room
+		dynamically into the right place sorted by the first character of the room name. Pressing the navigation bar will direct the client to the right place in the room list. So clients can conviniently find the room they want to join.
+											-----------implemented by lobbyUI.js
+		2. Precise detection of plucking the strings of guitar and bass.
+		We support string pressing and plucking for guitar and bass precisely with no delay. Gestures of moving from one string to other,and moving forward and backward within one sring are both handled by our algorithm.
+		                                    ------------implemented in initialization.js,line 39
+
+2.HTML
+
+All the html code are in index.html. 
+Using <ul> and <li> for roomList and songList layout.
+Using <div> for instrument layout. 
+<a> for Return buttons.
+
+3.CSS
+(1) CSS animation (All in animation.css)
+Used the @keyframe made a fade in and fade out effect for the chat function.
+
+(2) CSS transition (A lot instruments.css)
+Used the CSS transition for drum animation effect.
+
+(3) CSS transformation (A lot instruments.css)
+Used the CSS transformation for BASS top strings(Skew) and piano (Scale).
+
+(4) CSS gradients (A lot instruments.css)
+Used the CSS gradients for all the strings in guitar and bass and some effects for the buttons.
+
+(5) Multiple Backgrounds (layout.css)
+Used CSS3 complex techniques such as multiple backgrounds (Instrument selection), multiple box shadows (The container) and multiple text shadows (For the logo on the login page).
+
+(6) Media Query
+Used the media query for the size of Piano if the width of the screen is narrower than 500px.
+
+
+4.DOM manipulation
+	We use jQuery to dynamically change the DOM elements in html files based on users interaction.
+	There are several categories:
+		1. Adding and removing elements from HTML using append(), $.remove().
+		2.Animation effects using scrollTo(), addClass() (with css transition effects)
+		3.Changing attribute, html, css style using attr(),html(),css().
+		4.Get information from elements using $.position(), $.children(). etc.
+	Since we almost use DOM manipulatio everywhere, we didn't cite the lines here.
+
+5.jQuery
+
+jQuery-1.9.1 was used for the app('js/library/jquery-1.9.1.js').
+jQuery was widely used in this project. For most of the time, it is used for selecting elements in html and doing manipulations like: 
+(1) changing css ("roomInteraction.js")
+(2) getting/changing value (line 36 in "lobbyPage.js")
+(3) adding/deleting classes (line 79,80 in "instrumentPage.js")
+and so on.
+
+
+6.PhoneGap
+
+PhoneGap is used because we wanted to solve the audio latency caused by the device. 
+
+For the android version, the whole project folder structure was built using Eclipse.
+
+For the ios version, the whole project was built using command line tool in xcode.   
+
+7.PGLowLatency plugin
+
+We used the source code of phonegap native-plugins to solve the device audio latency. The link for github code is as following.
+
+The MIT License
+
+Copyright (c) 2010 Jesse MacFadyen
+
+https://github.com/phonegap/phonegap-plugins
+
+For the android version, the native-code files are in the following folders: "src/com/phonegap", "bin/classes/com/phonegap". The js file is in "assets/www/js/library".
+
+For the ios version, the native-code files are in the following folder: "PGTestHelloWorld/Plugins". The js file is in "www/js/library".
+
+Preload using the plugin: Line 34 in "InstrumentPage.js".
+Play using the plugin: Line 57 in "InstrumentPage.js". 
+
+8.node.js
+
+The node_modules of mongodb and socket.io are used. All the server sides are built based on the node module files, which are in the folder node_modules.
+
+9.websockets
+
+Socket.io is an important part of our project. As we want to implement the in-time collaboration among users, socket.io was used to listen the play-music events on one-client and send the event message to all the clients in the room. 
+Socket.io was also used in register and login, sending chatting messages, sending records to store in the database, extracting tracks from database to play.
+
+On the server-side, most of the code in 'socketserverObject.js' are about 'socket.io'. On the client-side, most of the "socket.on" events are in 'connectSocket.js'. 
+
+
+10. client-side caching and localStorage
+
+As the user has to manually type in the URL matching the IP address of the current server, we made it easier for the user that last times' URL was stored using the local storage. So the user does not need to change the URL if the server's IP does not change. If the IP changes, the user only needs to do some minor changes. 
+
+The code for local storage can be found at:
+
+Line 66 in "initialization.js"
+Line 23 in "getURL.js" 
+
+
+11. server-side databases
+
+MongoDb was used on the server-side. 
+MongoDb was used for:
+(1) storing the names of all the registered users (collection name:'userList');
+(2) storing the profiles of all the registered users (collection name:'userProfile'. Documents in the collection have information about the users' names, passwords and profiles)
+(3) storing all the recorded tracks. (collection name:'tempSongPool'. Documents in the collection have the following attributs: 'songName','recordTime','members','time','instrument','sound'. 'songName','recordTime' and 'members' are used for distinguishing the different records of different bands. 'time','instrument' and 'sound' are for the timeline, different tracks and different sounds played)
+
+The code for MongoDb can be found in the server-side's 'socket/database.js'.
+For the client-side, most of the functions sending server requests about the database can be found in "mongoDb.js".
+
+
+

@@ -1,0 +1,103 @@
+   /*The Basic structure of the Application*/
+
+    body {
+        background-color:#222;
+        background:url('../images/background.png');
+        background-size: cover;
+        font-family: 'Open Sans Condensed', sans-serif;
+    }
+   label{
+       display:inline-block;
+       width:30%;
+       margin:10px;
+   }
+
+    #container{
+        width: 90%;
+        height: 80%;
+        margin: auto;
+        background: rgba(0,0,0,0.6);
+        margin-top: 10%;
+        -webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.7), 0 -1px 1px rgba(225,225,225,0.7);
+        -moz-box-shadow: 0 2px 4px rgba(0,0,0,0.7), 0 -1px 1px rgba(225,225,225,0.7);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.7), 0 -1px 1px rgba(225,225,225,0.7);
+        padding: 10px;
+    }
+
+
+    #toPiano,#toDrum,#toGuitar,#toBass {
+        position:absolute;
+        width: 40%;
+        height: 32%;
+        border-radius: 6px;
+        -webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.7), 0 -1px 1px rgba(225,225,225,0.7);
+        -moz-box-shadow: 0 2px 4px rgba(0,0,0,0.7), 0 -1px 1px rgba(225,225,225,0.7);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.7), 0 -1px 1px rgba(225,225,225,0.7);
+    }
+
+    #toPiano {
+        left:8%;
+        bottom:80px;
+        background: url("../images/icons_piano.png") no-repeat center center, -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(255,255,255,0.55) 42%,rgba(255,255,255,0.3) 100%); /* Chrome10+,Safari5.1+ */
+
+    }
+    #toDrum {
+        background:url("../images/icons_drum.png") no-repeat center center, -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(255,255,255,0.55) 42%,rgba(255,255,255,0.3) 100%);
+        right:8%;
+        bottom:80px;
+    }
+    #toGuitar {
+        background:url("../images/icons_guitar.png") no-repeat center center, -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(255,255,255,0.55) 42%,rgba(255,255,255,0.3) 100%);
+        background-color: rgba(255,255,255,0.6);
+        right:8%;
+        top:80px;
+    }
+    #toBass {
+        background:url("../images/icons_bass.png") no-repeat center center, -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(255,255,255,0.55) 42%,rgba(255,255,255,0.3) 100%);
+        background-color: rgba(255,255,255,0.6);
+        left:8%;
+        top:80px;
+    }
+
+    .touched {
+        background-color:rgba(255,140,0,.6);
+        border: 5px solid rgba(50,50,50,.8);
+    }
+
+    .loginPage{
+        display:block;
+    }
+
+    .guitarPage, .pianoPage, .bassPage, .drumPage, .menuPage, .lobbyPage, .mySongsPage{
+        display:none;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    .menuPage{
+        width: 100%;
+        height: 100%;
+    }
+
+
+    #Table_01{
+        transform: scale(1,0.8);
+        -webkit-transform:scale(1,0.8);
+        -ms-transform:scale(1,0.8);
+        transform-origin:0% 0%;
+        -webkit-transform-origin:0% 0%;
+        -ms-transform-origin:0% 0%;
+    }
+
+    @media only screen and (max-width : 500px) {
+        #Table_01{
+            transform: scale(1,0.7);
+            -webkit-transform:scale(1,0.7);
+            -ms-transform:scale(1,0.7
+            );
+            transform-origin:0% 0%;
+            -webkit-transform-origin:0% 0%;
+            -ms-transform-origin:0% 0%;
+        }
+    }
